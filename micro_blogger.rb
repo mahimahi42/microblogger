@@ -18,10 +18,13 @@ class MicroBlogger
 
     def run
         puts "Welcome to the JSL Twitter Client!"
+        command = ""
+        while command != "q"
+            printf "enter command: "
+            command = gets.chomp
+        end
     end
 end
 
 b = MicroBlogger.new
-b.tweet("MicroBlogger initialized!")
-b.tweet("".ljust(140, "abcd"))
-b.tweet("".ljust(150, "abcd"))
+b.run
