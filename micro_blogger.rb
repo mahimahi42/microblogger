@@ -1,4 +1,5 @@
 require 'jumpstart_auth'
+require 'bitly'
 
 class MicroBlogger
     attr_reader :client
@@ -56,6 +57,13 @@ class MicroBlogger
         end
     end
 
+    def shorten(original_url)
+        Bitly.use_api_version_3
+        bitly = Bitly.new("hungryacademy", "R_430e9f62250186d2612cca76eee2dbc6")
+        puts "Shortening this URL: #{original_url}"
+        return bitly.shorten(original_url)
+    end
+
     def run
         puts "Welcome to the JSL Twitter Client!"
         command = ""
@@ -70,6 +78,7 @@ class MicroBlogger
                 when "dm" then self.dm(parts[1], parts[2..-1].join(" "))
                 when "spam" then self.spam(parts[1..-1].join(" "))
                 when "elt" then self.everyones_last_tweet
+                when "s" then self.shorten(parts[1..-1].join(" "))
                 else
                     puts "Sorry, I don't know how to #{command}"
             end
