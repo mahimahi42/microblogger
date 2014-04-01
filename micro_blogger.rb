@@ -79,6 +79,7 @@ class MicroBlogger
                 when "spam" then self.spam(parts[1..-1].join(" "))
                 when "elt" then self.everyones_last_tweet
                 when "s" then self.shorten(parts[1..-1].join(" "))
+                when "turl" then self.tweet(parts[1..-2].join(" ") + " " + shorten(parts[-1]))
                 else
                     puts "Sorry, I don't know how to #{command}"
             end
