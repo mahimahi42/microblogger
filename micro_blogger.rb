@@ -16,6 +16,20 @@ class MicroBlogger
         end
     end
 
+    def dm(target, message)
+        puts "Trying to send @#{target} this direct message:"
+        puts message
+
+        screen_names = @client.followers.collect{|follower| follower.screen_name}
+
+        if screen_names.include? target 
+            mess = "d #{target} #{message}"
+            self.tweet(mess)
+        else
+            puts "You can only DM people following you!"
+        end
+    end
+
     def run
         puts "Welcome to the JSL Twitter Client!"
         command = ""
@@ -27,6 +41,7 @@ class MicroBlogger
             case command
                 when "q" then puts "Goodbye!"
                 when "t" then self.tweet(parts[1..-1].join(" "))
+                when "dm" then dm(parts[1], parts[2..-1].join(" "))
                 else
                     puts "Sorry, I don't know how to #{command}"
             end
