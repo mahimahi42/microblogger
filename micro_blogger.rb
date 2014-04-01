@@ -1,10 +1,14 @@
 require 'jumpstart_auth'
 require 'bitly'
+require 'klout'
 
 class MicroBlogger
     attr_reader :client
 
     def initialize
+        Bitly.use_api_version_3
+        @bitly = Bitly.new("hungryacademy", "R_430e9f62250186d2612cca76eee2dbc6")
+        Klout.api_key = "xu9ztgnacmjx3bu82warbr3h"
         puts "Initializing..."
         @client = JumpstartAuth.twitter
     end
@@ -58,10 +62,19 @@ class MicroBlogger
     end
 
     def shorten(original_url)
-        Bitly.use_api_version_3
-        bitly = Bitly.new("hungryacademy", "R_430e9f62250186d2612cca76eee2dbc6")
         puts "Shortening this URL: #{original_url}"
-        return bitly.shorten(original_url)
+        return @bitly.shorten(original_url)
+    end
+
+    def klout_score
+        puts "Klout Scores"
+        friends = @client.friends.collect{|f| f.screen_name}
+        friends.each do |friend|
+            printf "#{friend}: "
+            i = Klout::Identity.find_by_screen_name(friend)
+            user = Klout::User.new(i.id)
+            puts "#{user.score.score}"
+        end
     end
 
     def run
@@ -80,6 +93,7 @@ class MicroBlogger
                 when "elt" then self.everyones_last_tweet
                 when "s" then self.shorten(parts[1..-1].join(" "))
                 when "turl" then self.tweet(parts[1..-2].join(" ") + " " + shorten(parts[-1]))
+                when "k" then self.klout_score
                 else
                     puts "Sorry, I don't know how to #{command}"
             end
